@@ -70,8 +70,10 @@ class SegmentController {
     ~SegmentController() {};
 
     int getSegmentLength() {return segmentLength;};
-    
-    virtual UpdateItems update() 
+
+    // t is a return from a call to millis. This is passed to the update function so that all 
+    // segment controllers use the same time to compute update.
+    virtual UpdateItems update(unsigned long t) 
     {
       UpdateItems ret(segmentLength);
       for(int i = 0; i < ret.getSize(); i++) {

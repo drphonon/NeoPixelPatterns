@@ -27,10 +27,8 @@ class CirclerSegment : public SegmentController
       posIncrement = clockWise ? 1 : -1;
     }
 
-    UpdateItems update()
+    UpdateItems update(unsigned long currMillis)
     {
-      unsigned long currMillis = millis();
-  
       UpdateItems ret(patternLength);
       // set the pixels from startPos to startPos + patternLength to r, g, b
       for(int j = 0; j < ret.getSize(); j++) {
@@ -65,7 +63,7 @@ class RingSegment : public SegmentController
       
      }
 
-    UpdateItems update() {
+    UpdateItems update(unsigned long t) {
       UpdateItems ret(getSegmentLength());
       // Set every pixel in the segement to the color r, g, b
       for(int i = 0; i < ret.getSize(); i++) {
@@ -100,8 +98,7 @@ class PulserSegment : public SegmentController
       
      }
 
-    UpdateItems update() {
-      unsigned long currMillis = millis();
+    UpdateItems update(unsigned long currMillis) {
       const float Pi = 3.141593;
 
       // Compute the brightness level
@@ -125,6 +122,8 @@ class SpinnerSegment : public SegmentController
     int startPos;
     bool clockWise;
     int posIncrement;
+    unsigned long lastMillis;
+    long vmin;
 
   public:
     SpinnerSegment(int segmentLength, int patternLength, int max_speed, int period, uint8_t r, uint8_t g, uint8_t b,  int startPosition = 0, bool clockWise = true) :
@@ -136,14 +135,14 @@ class SpinnerSegment : public SegmentController
     g(g),
     b(b),
     startPos(startPosition),
-    clockWise(clockWise)
+    clockWise(clockWise), 
+    lastMillis(0)
     {
-      posIncrement = clockWise ? 1 : -1;       
+      posIncrement = clockWise ? 1 : -1;
+      vmin = getSegmentLength();       
     }
 
-    UpdateItems update() {
-      static unsigned long lastMillis = 0;
-      unsigned long currMillis = millis();
+    UpdateItems update(unsigned long currMillis) {
       const float Pi = 3.141593;
       long stepTime;
       UpdateItems ret(patternLength);
@@ -151,7 +150,7 @@ class SpinnerSegment : public SegmentController
       // The velocity of the spinner varies like sin(2*PI*t/period)
       // Compute the current velocity. The spinner only goes in one direction so we 
       // change the range of sine from -1/1 to 0/1
-      float v = max(max_speed * ((sin(2.0*Pi*millis()/period) + 1) * 0.5), 0.1);
+      float v = max(max_speed * ((sin(2.0*Pi*currMillis/period) + 1) * 0.5), vmin);
       // compute the new stepTime. stepTime = 1/v *1000 in units of ms/px
       stepTime = 1000.0/v;
       if(currMillis - lastMillis > stepTime) {
@@ -168,31 +167,6 @@ class SpinnerSegment : public SegmentController
    
       return ret;
     }
-
-//    UpdateItems update()
-//    {
-//      unsigned long currMillis = millis();
-//      static unsigned long lastMillis;
-//      int stepTime = 100;
-//  
-//      UpdateItems ret(patternLength);
-//      // set the pixels from startPos to startPos + patternLength to r, g, b
-//      for(int j = 0; j < ret.getSize(); j++) {
-//        ret.getItem(j)->setValues((startPos + j * posIncrement + getSegmentLength()) % getSegmentLength(), r, g, b);
-//      }
-//  
-//      if((currMillis - lastMillis) > stepTime)
-//      {
-//        // increment startPos every stepTime milliseconds
-//        startPos += posIncrement;
-//        if(startPos > getSegmentLength()) startPos = 1;
-//        if(startPos < 0) startPos = getSegmentLength() - 1;
-//        lastMillis = currMillis;
-//      }
-//      
-//      return ret;
-//    }
-
 };
 
 #endif

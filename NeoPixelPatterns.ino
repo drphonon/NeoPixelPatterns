@@ -32,7 +32,8 @@ void setup() {
 
  // waves(strip_controller);
 //  breath(strip_controller);
-  pulse(strip_controller);
+//  pulse(strip_controller);
+  patternSet9(strip_controller);
 }
 
 void loop() {
@@ -144,8 +145,15 @@ void patternSet8(StripController &strip_controller) {
 
 void patternSet9(StripController &strip_controller) {
   strip_controller.deleteSegments();
+
   strip_controller.addSegment(new SpinnerSegment(12, 2, 100, 5000, 0, 100, 0), 0);  
+  
+  strip_controller.addSegment(new SpinnerSegment(12, 6, 50, 3000, 0, 100, 0, 0), 12);  
+  strip_controller.addSegment(new SpinnerSegment(12, 6, 50, 3000, 100, 10, 70, 6), 12);  
   //strip_controller.addSegment(new CirclerSegment(12, 2, 40, 0, 255, 0, 0, false), 0);
+
+  strip_controller.addSegment(new SpinnerSegment(12, 9, 50, 3000, 0, 0, 100, 0, false), 24);  
+  strip_controller.addSegment(new SpinnerSegment(12, 3, 50, 3000, 70, 100, 10, 6, false), 24);  
 }
 
 void waves(StripController &strip_controller) {
