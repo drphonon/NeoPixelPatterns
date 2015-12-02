@@ -11,39 +11,45 @@ StripController strip_controller = StripController(led_strip);
 
 // Array of pattern setting functions
 typedef void (*fp)(StripController &strip_controller);
-const int numPatterns = 7;
+const int numPatterns = 8;
 fp patterns[numPatterns];
 const int switchDelay = 10000;
 
 void setup() {
   // Set up the pattern setting functions array
-  patterns[0] = patternSet1;
-  patterns[1] = patternSet5;
-  patterns[2] = patternSet3;
-  patterns[3] = patternSet4;
-  patterns[4] = patternSet6;
-  patterns[5] = patternSet7;
-  patterns[6] = patternSet8;
+//  patterns[0] = patternSet1;
+//  patterns[1] = patternSet5;
+//  patterns[2] = patternSet3;
+//  patterns[3] = patternSet4;
+//  patterns[4] = patternSet6;
+//  patterns[5] = patternSet7;
+//  patterns[6] = patternSet8;
+//  patterns[7] = patternSet9;
 
   led_strip.begin();
-  led_strip.clear();
-  delay(3000);  
+  led_strip.show();
+  delay(3000);
+
+ // waves(strip_controller);
+//  breath(strip_controller);
+  pulse(strip_controller);
 }
 
 void loop() {
   static int currPattern = 0;
   static unsigned long lastMillis = 0;
 
-  if(millis() - lastMillis > switchDelay || lastMillis == 0)
-  {
-    patterns[currPattern](strip_controller);
-    currPattern = (currPattern + 1) % numPatterns;
-    lastMillis = millis();
-  }
+//  if(millis() - lastMillis > switchDelay || lastMillis == 0)
+//  {
+//    patterns[currPattern](strip_controller);
+//    currPattern = (currPattern + 1) % numPatterns;
+//    lastMillis = millis();
+//  }
   
   strip_controller.show();
 }
 
+// One circler per ring, ccw rotation. 
 void patternSet1(StripController &strip_controller) {
   strip_controller.deleteSegments();
   strip_controller.addSegment(new CirclerSegment(12, 2, 10, 0, 255, 0, 0, false), 0);
@@ -52,6 +58,7 @@ void patternSet1(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 8, 40, 120, 0, 120, 6, false), 36);
 }
 
+// One circler per ring, cw rotation
 void patternSet5(StripController &strip_controller) {
   strip_controller.deleteSegments();
   strip_controller.addSegment(new CirclerSegment(12, 2, 10, 0, 255, 0, 0, true), 0);
@@ -68,6 +75,7 @@ void patternSet5(StripController &strip_controller) {
 //  strip_controller.addSegment(new CirclerSegment(24, 3, 30, 120, 0, 120, 6, true), 24);  
 //}
 
+// Two circlers per ring, rotating in the same direction at the same speed.
 void patternSet3(StripController &strip_controller) {
   strip_controller.deleteSegments();
   
@@ -84,6 +92,7 @@ void patternSet3(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 3, 50, 0, 125, 125, 6, true), 36);
 }
 
+// Two circlers per ring, rotating in the same direction at the same speed.
 void patternSet4(StripController &strip_controller) {
   strip_controller.deleteSegments();
   
@@ -100,6 +109,7 @@ void patternSet4(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 3, 50, 0, 125, 125, 6, false), 36);
 }
 
+// One circler per ring, cw rotation, rotating in the same direction at variable speeds over a single color ring segment.
 void patternSet6(StripController &strip_controller) {
   strip_controller.deleteSegments();
   strip_controller.addSegment(new RingSegment(48, 10, 10, 10), 0);
@@ -109,6 +119,7 @@ void patternSet6(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 2, 50, 120, 0, 120, 6, true), 36);
 }
 
+// One circler per ring, ccw rotation, rotating in the same direction at variable speeds over a single color ring segment.
 void patternSet7(StripController &strip_controller) {
   strip_controller.deleteSegments();
   strip_controller.addSegment(new RingSegment(48, 0, 10, 50), 0);
@@ -118,6 +129,7 @@ void patternSet7(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 2, 50, 120, 0, 120, 6, false), 36);
 }
 
+// Two circlers per ring, rotating on opposite directions.
 void patternSet8(StripController &strip_controller) {
   strip_controller.deleteSegments();
   strip_controller.addSegment(new CirclerSegment(12, 2, 40, 0, 255, 0, 0, false), 0);
@@ -129,3 +141,74 @@ void patternSet8(StripController &strip_controller) {
   strip_controller.addSegment(new CirclerSegment(12, 2, 60, 255, 0, 0, 6, false), 36);
   strip_controller.addSegment(new CirclerSegment(12, 2, 40, 120, 0, 120, 6, true), 36);
 }
+
+void patternSet9(StripController &strip_controller) {
+  strip_controller.deleteSegments();
+  strip_controller.addSegment(new SpinnerSegment(12, 2, 100, 5000, 0, 100, 0), 0);  
+  //strip_controller.addSegment(new CirclerSegment(12, 2, 40, 0, 255, 0, 0, false), 0);
+}
+
+void waves(StripController &strip_controller) {
+  strip_controller.deleteSegments();
+ 
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 1000, 6, 3, .5), 0);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1000, 6, 9, .75), 0);  
+  
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 1000, 6, 9, 0.25), 12);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1000, 6, 3, 0), 12);  
+  
+  //strip_controller.addSegment(new CirclerSegment(12, 2, 1000.0/12.0, 0, 0, 255, 0, false), 0);
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 0, 0.667), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 4, 0.833), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 6, 0.667), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 10, 0.5), 24);  
+
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 3, 0, 0.167), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 3, 3, 0.333), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 3, 6, 0.167), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 3, 9, 0.0), 36);  
+
+}
+
+void breath(StripController &strip_controller) {
+  strip_controller.deleteSegments();
+ 
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 3000, 6, 3, 0), 0);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 3000, 6, 9, .5), 0);  
+  
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 2000, 6, 9, 0.0), 12);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 6, 3, 0.5), 12);  
+  
+  //strip_controller.addSegment(new CirclerSegment(12, 2, 1000.0/12.0, 0, 0, 255, 0, false), 0);
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 0, 0.5), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 4, 0), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 6, 0.5), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 10, 0), 24);  
+
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 0, 0.5), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 4, 0), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 4, 6, 0.5), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 2000, 2, 10, 0.0), 36);  
+}
+
+void pulse(StripController &strip_controller) {
+  strip_controller.deleteSegments();
+ 
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 3000, 6, 3, 0), 0);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 3000, 6, 9, 0), 0);  
+  
+  strip_controller.addSegment(new PulserSegment(12, 0, 0, 255, 2000, 6, 9, 0.0), 12);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 2000, 6, 3, 0.0), 12);  
+  
+  //strip_controller.addSegment(new CirclerSegment(12, 2, 1000.0/12.0, 0, 0, 255, 0, false), 0);
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1000, 4, 0), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 500, 2, 4), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1000, 4, 6), 24);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 500, 2, 10), 24);  
+
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1050, 4, 0), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 1050, 2, 4), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 0, 255, 0, 1050, 4, 6), 36);  
+  strip_controller.addSegment(new PulserSegment(12, 255, 0, 0, 1050, 2, 10), 36);  
+}
+

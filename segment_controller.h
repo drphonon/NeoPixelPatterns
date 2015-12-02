@@ -1,7 +1,7 @@
 #ifndef SEGMENT_CONTROLLER_H
 #define SEGMENT_CONTROLLER_H
 
-#define MAX_SEGMENTS 10
+#define MAX_SEGMENTS 20
 
 // This represents one LED in the segment's pattern. 
 class UpdateItem {
